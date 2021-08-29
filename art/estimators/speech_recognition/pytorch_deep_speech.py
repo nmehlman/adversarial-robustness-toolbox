@@ -78,6 +78,8 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
         preprocessing: "PREPROCESSING_TYPE" = None,
         device_type: str = "gpu",
         verbose: bool = True,
+        weights_path = None
+
     ):
         """
         Initialization of an instance PyTorchDeepSpeech.
@@ -165,45 +167,51 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
 
         # Load model
         if model is None:
-            if pretrained_model == "an4":
-                filename, url = (
-                    "an4_pretrained_v2.pth",
-                    "https://github.com/SeanNaren/deepspeech.pytorch/releases/download/v2.0/an4_pretrained_v2.pth",
-                )
+            if not weights_path:
+                if pretrained_model == "an4":
+                    filename, url = (
+                        "an4_pretrained_v2.pth",
+                        "https://github.com/SeanNaren/deepspeech.pytorch/releases/download/v2.0/an4_pretrained_v2.pth",
+                    )
 
-            elif pretrained_model == "librispeech":
-                filename, url = (
-                    "librispeech_pretrained_v2.pth",
-                    "https://github.com/SeanNaren/deepspeech.pytorch/releases/download/v2.0/"
-                    "librispeech_pretrained_v2.pth",
-                )
-
-            elif pretrained_model == "tedlium":
-                filename, url = (
-                    "ted_pretrained_v2.pth",
-                    "https://github.com/SeanNaren/deepspeech.pytorch/releases/download/v2.0/ted_pretrained_v2.pth",
-                )
-
-            elif pretrained_model is None:
-                # If model is None and no pretrained model is selected, then we need to have parameters filename and
-                # url to download, extract and load the automatic speech recognition model
-                if filename is None or url is None:
+                elif pretrained_model == "librispeech":
                     filename, url = (
                         "librispeech_pretrained_v2.pth",
                         "https://github.com/SeanNaren/deepspeech.pytorch/releases/download/v2.0/"
                         "librispeech_pretrained_v2.pth",
                     )
 
+                elif pretrained_model == "tedlium":
+                    filename, url = (
+                        "ted_pretrained_v2.pth",
+                        "https://github.com/SeanNaren/deepspeech.pytorch/releases/download/v2.0/ted_pretrained_v2.pth",
+                    )
+
+                elif pretrained_model is None:
+                    # If model is None and no pretrained model is selected, then we need to have parameters filename and
+                    # url to download, extract and load the automatic speech recognition model
+                    if filename is None or url is None:
+                        filename, url = (
+                            "librispeech_pretrained_v2.pth",
+                            "https://github.com/SeanNaren/deepspeech.pytorch/releases/download/v2.0/"
+                            "librispeech_pretrained_v2.pth",
+                        )
+
+                else:
+                    raise ValueError("The input pretrained model %s is not supported." % pretrained_model)
+
+                # Download model
+                model_path = get_file(
+                    filename=filename, path=config.ART_DATA_PATH, url=url, extract=False, verbose=self.verbose
+                )
+
+                # Then load model
+                self._model = load_model(device=self._device, model_path=model_path, use_half=use_half)
+            
             else:
-                raise ValueError("The input pretrained model %s is not supported." % pretrained_model)
+                self._model = load_model(device=self._device, model_path=weights_path, use_half=use_half)
 
-            # Download model
-            model_path = get_file(
-                filename=filename, path=config.ART_DATA_PATH, url=url, extract=False, verbose=self.verbose
-            )
 
-            # Then load model
-            self._model = load_model(device=self._device, model_path=model_path, use_half=use_half)
 
         else:
             self._model = model
