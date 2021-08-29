@@ -167,6 +167,7 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
 
         # Load model
         if model is None:
+            print(weights_path)
             if not weights_path:
                 if pretrained_model == "an4":
                     filename, url = (
