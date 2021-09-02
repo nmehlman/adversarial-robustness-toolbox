@@ -131,7 +131,7 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
         from deepspeech_pytorch.configs.inference_config import LMConfig
         from deepspeech_pytorch.enums import DecoderType
         from deepspeech_pytorch.utils import load_decoder, load_model
-        from deepspeech_pytorch.model import DeepSpeech
+        from deepspeech_pytorch_v3.model import DeepSpeech
         # Super initialization
         super().__init__(
             model=None,
@@ -149,8 +149,9 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
             self._version = 3
         else:
             raise NotImplementedError("Only DeepSpeech version 2 and DeepSpeech version 3 are currently supported.")
+        
         self.verbose = verbose
-        #print(self._version)
+
         # Check clip values
         if self.clip_values is not None:
             if not np.all(self.clip_values[0] == -1):
