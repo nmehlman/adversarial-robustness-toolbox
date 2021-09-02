@@ -78,8 +78,8 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
         preprocessing: "PREPROCESSING_TYPE" = None,
         device_type: str = "gpu",
         verbose: bool = True,
-        weights_path = None
-
+        weights_path = None,
+        version = 2
     ):
         """
         Initialization of an instance PyTorchDeepSpeech.
@@ -131,7 +131,7 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
         from deepspeech_pytorch.configs.inference_config import LMConfig
         from deepspeech_pytorch.enums import DecoderType
         from deepspeech_pytorch.utils import load_decoder, load_model
-
+        from deepspeech_pytorch.model import DeepSpeech
         # Super initialization
         super().__init__(
             model=None,
@@ -141,9 +141,16 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
             postprocessing_defences=postprocessing_defences,
             preprocessing=preprocessing,
         )
-
+        
+        # Check DeepSpeech version
+        if str(DeepSpeech.__base__) == "<class 'torch.nn.modules.module.Module'>":
+            self._version = 2
+        elif str(DeepSpeech.__base__) == "<class 'pytorch_lightning.core.lightning.LightningModule'>":
+            self._version = 3
+        else:
+            raise NotImplementedError("Only DeepSpeech version 2 and DeepSpeech version 3 are currently supported.")
         self.verbose = verbose
-
+        #print(self._version)
         # Check clip values
         if self.clip_values is not None:
             if not np.all(self.clip_values[0] == -1):
