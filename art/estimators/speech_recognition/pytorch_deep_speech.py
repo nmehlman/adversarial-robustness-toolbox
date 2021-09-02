@@ -225,6 +225,8 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
             cwd = os.getcwd()
             os.chdir('/data/gard/nick/deepspeech_test')
             from deepspeech_pytorch.utils import load_model as get_model
+            import deepspeech_pytorch
+            print(deepspeech_pytorch.__path__)
             self._model = get_model("cuda", weights_path)
             os.chdir(cwd)
 
