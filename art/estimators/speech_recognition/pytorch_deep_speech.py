@@ -149,7 +149,7 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
             self._version = 3
         else:
             raise NotImplementedError("Only DeepSpeech version 2 and DeepSpeech version 3 are currently supported.")
-        
+        print(self._version)
         self.verbose = verbose
 
         # Check clip values
