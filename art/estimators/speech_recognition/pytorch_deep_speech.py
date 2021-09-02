@@ -131,7 +131,7 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
         from deepspeech_pytorch.configs.inference_config import LMConfig
         from deepspeech_pytorch.enums import DecoderType
         from deepspeech_pytorch.utils import load_decoder, load_model
-        from deepspeech_pytorch.model import DeepSpeech
+        from deepspeech_pytorch_v3.model import DeepSpeech
         # Super initialization
         super().__init__(
             model=None,
