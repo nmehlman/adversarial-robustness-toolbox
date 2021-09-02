@@ -34,7 +34,7 @@ from art.utils import get_file
 if TYPE_CHECKING:
     # pylint: disable=C0412
     import torch
-    from deepspeech_pytorch.model import DeepSpeech
+    from deepspeech_pytorch_v3.model import DeepSpeech
 
     from art.defences.postprocessor.postprocessor import Postprocessor
     from art.defences.preprocessor.preprocessor import Preprocessor
@@ -218,6 +218,9 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
                 self._model = load_model(device=self._device, model_path=model_path, use_half=use_half)
             
             else:
+                if weights_path:
+                    self._model = load_model(device=self._device, model_path=weights_path)
+                else:
                 self._model = load_model(device=self._device, model_path=weights_path, use_half=use_half)
 
 
