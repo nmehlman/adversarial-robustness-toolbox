@@ -221,14 +221,8 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
                 self._model = load_model(device=self._device, model_path=weights_path, use_half=use_half)
 
         elif weights_path:
-            import sys, os
-            sys.path.insert(0, "/data/gard/nick/deepspeech_test")
-            d = os.getcwd()
-            os.chdir("/data/gard/nick/deepspeech_test")
-            from deepspeech_pytorch.utils import load_model
+            from deepspeech_pytorch_v3.utils import load_model
             self._model = load_model("cuda", weights_path)
-            os.chdir(d)
-            sys.path.pop(0)
 
         else:
             self._model = model
