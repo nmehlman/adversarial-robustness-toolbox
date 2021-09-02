@@ -221,7 +221,7 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
                 if weights_path:
                     self._model = load_model(device=self._device, model_path=weights_path)
                 else:
-                self._model = load_model(device=self._device, model_path=weights_path, use_half=use_half)
+                    self._model = load_model(device=self._device, model_path=weights_path, use_half=use_half)
 
 
 
