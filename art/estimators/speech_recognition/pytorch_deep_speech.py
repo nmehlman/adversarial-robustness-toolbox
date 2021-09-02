@@ -128,9 +128,9 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
                             if available otherwise run on CPU.
         """
         import torch  # lgtm [py/repeated-import]
-        from deepspeech_pytorch.configs.inference_config import LMConfig
-        from deepspeech_pytorch.enums import DecoderType
-        from deepspeech_pytorch.utils import load_decoder, load_model
+        from deepspeech_pytorch_v3.configs.inference_config import LMConfig
+        from deepspeech_pytorch_v3.enums import DecoderType
+        from deepspeech_pytorch_v3.utils import load_decoder, load_model
         from deepspeech_pytorch_v3.model import DeepSpeech
         # Super initialization
         super().__init__(
