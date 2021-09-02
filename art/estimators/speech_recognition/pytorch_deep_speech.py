@@ -34,7 +34,7 @@ from art.utils import get_file
 if TYPE_CHECKING:
     # pylint: disable=C0412
     import torch
-    from deepspeech_pytorch_v3.model import DeepSpeech
+    from deepspeech_pytorch.model import DeepSpeech
 
     from art.defences.postprocessor.postprocessor import Postprocessor
     from art.defences.preprocessor.preprocessor import Preprocessor
@@ -128,10 +128,10 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
                             if available otherwise run on CPU.
         """
         import torch  # lgtm [py/repeated-import]
-        from deepspeech_pytorch_v3.configs.inference_config import LMConfig
-        from deepspeech_pytorch_v3.enums import DecoderType
-        from deepspeech_pytorch_v3.utils import load_decoder, load_model
-        from deepspeech_pytorch_v3.model import DeepSpeech
+        from deepspeech_pytorch.configs.inference_config import LMConfig
+        from deepspeech_pytorch.enums import DecoderType
+        from deepspeech_pytorch.utils import load_decoder, load_model
+        from deepspeech_pytorch.model import DeepSpeech
         # Super initialization
         super().__init__(
             model=None,
@@ -174,7 +174,7 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
         self._input_shape = None
 
         # Load model
-        if model is None:
+        if model is None and not weights_path:
             print(weights_path)
             if not weights_path:
                 if pretrained_model == "an4":
@@ -218,12 +218,15 @@ class PyTorchDeepSpeech(SpeechRecognizerMixin, PyTorchEstimator):
                 self._model = load_model(device=self._device, model_path=model_path, use_half=use_half)
             
             else:
-                if weights_path:
-                    self._model = load_model(device=self._device, model_path=weights_path)
-                else:
-                    self._model = load_model(device=self._device, model_path=weights_path, use_half=use_half)
+                self._model = load_model(device=self._device, model_path=weights_path, use_half=use_half)
 
-
+        elif weights_path:
+            import os
+            cwd = os.getcwd()
+            os.chdir('/data/gard/nick/deepspeech_test')
+            from deepspeech_pytorch.utils import load_model
+            self._model = load_model("cuda", weights_path)
+            os.chdir(cwd)
 
         else:
             self._model = model
